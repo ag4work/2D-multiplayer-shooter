@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.ag;
+package connector;
 
 import java.io.IOException;
 import java.util.Set;
@@ -30,6 +30,9 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 
+import game.FrontendGameStateDrawerImpl;
+import game.GameStateDrawer;
+import game.PCAndHumanGameRunner;
 import util.HTMLFilter;
 
 @ServerEndpoint(value = "/websocket/chat1")
@@ -44,6 +47,7 @@ public class ChatAnno {
 
     private final String nickname;
     private Session session;
+    private static PCAndHumanGameRunner gameRunner;
 
     public ChatAnno() {
         nickname = GUEST_PREFIX + connectionIds.getAndIncrement();
@@ -55,6 +59,8 @@ public class ChatAnno {
 
     @OnOpen
     public void start(Session session) {
+        GameStateDrawer drawer = new FrontendGameStateDrawerImpl(session);
+        gameRunner = new PCAndHumanGameRunner(drawer);
         this.session = session;
         connections.add(this);
         String message = String.format("* %s %s", nickname, "has joined.");
@@ -67,17 +73,18 @@ public class ChatAnno {
         connections.remove(this);
         String message = String.format("* %s %s",
                 nickname, "has disconnected.");
-        broadcast(message);
+//        broadcast(message);
     }
 
 
     @OnMessage
     public void incoming(String message) {
         log.info("Websocket incoming message: " + message);
+        gameRunner.humanCommand(message);
         // Never trust the client
         String filteredMessage = String.format("%s: %s",
                 nickname, HTMLFilter.filter(message.toString()));
-        broadcast(filteredMessage);
+//        broadcast(filteredMessage);
     }
 
 

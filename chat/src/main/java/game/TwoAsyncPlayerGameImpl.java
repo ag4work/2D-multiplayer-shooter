@@ -1,21 +1,21 @@
 package game;
 
+import org.apache.log4j.Logger;
 import player.Player;
 import player.PlayerAsync;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class TwoAsyncPlayerGameImpl implements Game {
 
     private PlayerAsync player1;
     private PlayerAsync player2;
     private Player winner;
-    private static final Logger logger = Logger.getLogger(TwoAsyncPlayerGameImpl.class.getName());
-    private static final int INTERNAL_DELAY_IN_MS = 400;
+    private static final Logger logger = Logger.getLogger(TwoAsyncPlayerGameImpl.class);
+    private static final int INTERNAL_DELAY_IN_MS = 2000;
     private GameStateDrawer drawer;
-    private List<Player> players = new LinkedList<>();
+    private List<Player> players = new LinkedList<Player>();
 
     public TwoAsyncPlayerGameImpl(PlayerAsync player1, PlayerAsync player2, GameStateDrawer drawer) {
         this.player1 = player1;
@@ -27,7 +27,7 @@ public class TwoAsyncPlayerGameImpl implements Game {
 
     @Override
     public void playGame() {
-        logger.fine("Starting game.");
+        logger.info("Starting game.");
         player1.start();
         player2.start();
         do {

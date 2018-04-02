@@ -61,6 +61,7 @@ Game.init = function(canvasId) {
 
     };
     Game.sendMessage = function(message) {
+        console.log("senging message:" + message);
         Game.socket.send(message);
     };
 
@@ -69,9 +70,8 @@ Game.init = function(canvasId) {
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     myrect(ctx,0, 0, canvas.width, canvas.height);
+    Game.connect('ws://' + window.location.host + window.location.pathname + '/websocket/endpoint');
     addKeyboardListners();
-    Game.connect('ws://' + window.location.host + '/game/websocket/endpoint');
-
 };
 
 

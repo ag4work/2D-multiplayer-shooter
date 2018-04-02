@@ -34,7 +34,7 @@
         });
 
         Chat.initialize = function() {
-                Chat.connect('ws://' + window.location.host + window.location.pathname + '/websocket/chat1');
+               // Chat.connect('ws://' + window.location.host + window.location.pathname + '/websocket/chat1');
         };
 
         Chat.sendMessage = (function() {

@@ -1,8 +1,11 @@
 package player;
 
 import game.Move;
+import org.apache.log4j.Logger;
+
 
 public class PlayerHumanImpl implements PlayerHuman {
+    private static final Logger LOGGER = Logger.getLogger(PlayerHumanImpl.class);
 
     private Move nextMove;
     private Integer x = 50;
@@ -36,6 +39,10 @@ public class PlayerHumanImpl implements PlayerHuman {
 
     @Override
     public void applyMove() {
+        if (nextMove == null) {
+            LOGGER.warn("next move is null..");
+            return;
+        }
         if (x >= 10 && nextMove.equals(Move.LEFT)) {
             x = x - DX;
         }

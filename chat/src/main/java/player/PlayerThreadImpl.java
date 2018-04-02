@@ -1,12 +1,12 @@
 package player;
 
 import game.Move;
+import org.apache.log4j.Logger;
 
-import java.util.logging.Logger;
 
 public class PlayerThreadImpl implements PlayerAsync{
-    public static final Logger logger = Logger.getLogger(PlayerThreadImpl.class.getName());
-    private static final long DEFAULT_DELAY_MS = 300;
+    public static final Logger logger = Logger.getLogger(PlayerThreadImpl.class);
+    private static final long DEFAULT_DELAY_MS = 1900;
 
     private boolean stopped = false;
     private Move nextMove;

@@ -16,7 +16,7 @@ public class FrontendGameStateDrawerImpl implements GameStateDrawer {
     @Override
     public void draw() {
         Player player1 = game.getPlayers().get(0);
-        Player player2 = game.getPlayers().get(0);
+        Player player2 = game.getPlayers().get(1);
         try {
             session.getBasicRemote().sendText("Player1:" + player1.getX() + "    Player2:" + player2.getX());
         } catch (IOException e) {

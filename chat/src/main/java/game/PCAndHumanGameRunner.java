@@ -14,8 +14,8 @@ public class PCAndHumanGameRunner {
         pcPlayer = new PlayerThreadImpl("PC Player");
         playerHuman = new PlayerHumanImpl();
         Game game = new TwoAsyncPlayerGameImpl(pcPlayer, playerHuman, drawer);
-        drawer.setGame(game);
-        game.playGame();
+        drawer.setGame(game); // todo
+        game.playGame();      // todo
 
     }
 
