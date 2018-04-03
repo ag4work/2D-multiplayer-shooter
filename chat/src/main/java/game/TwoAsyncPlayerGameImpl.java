@@ -39,9 +39,13 @@ public class TwoAsyncPlayerGameImpl implements Game {
         } while (!someoneWin());
         player1.stop();
         player2.stop();
+        logger.info("Game finished.");
     }
 
     private boolean someoneWin() {
+        if (true) {
+            return false; // todo remove it
+        }
         if (player1.getNextMove() == null) {
             logger.info("player1 did not do his move");
             return false;

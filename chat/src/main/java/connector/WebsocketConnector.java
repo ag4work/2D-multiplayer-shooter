@@ -21,13 +21,9 @@ public class WebsocketConnector {
     public void start(Session session) {
         logger.info("Session started1.");
         final GameStateDrawer drawer = new FrontendGameStateDrawerImpl(session);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                gameRunner = new PCAndHumanGameRunner(drawer);
-                logger.info("Session started2.");
-            }
-        }).start();
+        gameRunner = new PCAndHumanGameRunner(drawer);
+        gameRunner.runInSeparateThread();
+        logger.info("Session started2.");
     }
 
     @OnMessage

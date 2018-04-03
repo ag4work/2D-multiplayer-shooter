@@ -9,14 +9,22 @@ import player.PlayerThreadImpl;
 public class PCAndHumanGameRunner {
     PlayerAsync pcPlayer;
     PlayerHuman playerHuman;
+    Game game;
 
     public PCAndHumanGameRunner(GameStateDrawer drawer) {
         pcPlayer = new PlayerThreadImpl("PC Player");
         playerHuman = new PlayerHumanImpl();
-        Game game = new TwoAsyncPlayerGameImpl(pcPlayer, playerHuman, drawer);
-        drawer.setGame(game); // todo
-        game.playGame();      // todo
+        game = new TwoAsyncPlayerGameImpl(pcPlayer, playerHuman, drawer);
+        drawer.setGame(game);
+    }
 
+    public void runInSeparateThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                game.playGame();
+            }
+        }).start();
     }
 
     public void humanCommand(String msg) {
