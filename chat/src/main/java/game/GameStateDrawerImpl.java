@@ -1,15 +1,14 @@
 package game;
 
 import player.Player;
-
 import javax.websocket.Session;
 import java.io.IOException;
 
-public class FrontendGameStateDrawerImpl implements GameStateDrawer {
+public class GameStateDrawerImpl implements GameStateDrawer {
     private Session session;
     private Game game;
 
-    public FrontendGameStateDrawerImpl(Session session) {
+    public GameStateDrawerImpl(Session session) {
         this.session = session;
     }
 

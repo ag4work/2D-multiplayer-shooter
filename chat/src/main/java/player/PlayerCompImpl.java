@@ -1,11 +1,11 @@
 package player;
 
-import game.Move;
+import enums.Move;
 import org.apache.log4j.Logger;
 
 
-public class PlayerThreadImpl implements PlayerAsync{
-    public static final Logger logger = Logger.getLogger(PlayerThreadImpl.class);
+public class PlayerCompImpl implements PlayerAsync{
+    public static final Logger logger = Logger.getLogger(PlayerCompImpl.class);
     private static final long DEFAULT_DELAY_MS = 1900;
 
     private boolean stopped = false;
@@ -15,7 +15,7 @@ public class PlayerThreadImpl implements PlayerAsync{
     private static final int DX = 10;
 
 
-    public PlayerThreadImpl(final String name) {
+    public PlayerCompImpl(final String name) {
         this.name = name;
     }
 
@@ -80,5 +80,6 @@ public class PlayerThreadImpl implements PlayerAsync{
             x = x + DX;
         }
     }
+
 
 }

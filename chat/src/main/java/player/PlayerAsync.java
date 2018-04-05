@@ -1,6 +1,6 @@
 package player;
 
-import game.Move;
+import enums.Move;
 
 public interface PlayerAsync extends Player{
     // get direction of next move

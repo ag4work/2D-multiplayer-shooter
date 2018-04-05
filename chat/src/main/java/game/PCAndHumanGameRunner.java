@@ -1,9 +1,9 @@
 package game;
 
+import player.PlayerCompImpl;
 import player.PlayerAsync;
 import player.PlayerHuman;
 import player.PlayerHumanImpl;
-import player.PlayerThreadImpl;
 
 
 public class PCAndHumanGameRunner {
@@ -12,7 +12,7 @@ public class PCAndHumanGameRunner {
     Game game;
 
     public PCAndHumanGameRunner(GameStateDrawer drawer) {
-        pcPlayer = new PlayerThreadImpl("PC Player");
+        pcPlayer = new PlayerCompImpl("PC Player");
         playerHuman = new PlayerHumanImpl();
         game = new TwoAsyncPlayerGameImpl(pcPlayer, playerHuman, drawer);
         drawer.setGame(game);

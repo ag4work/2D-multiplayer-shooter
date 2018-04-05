@@ -1,6 +1,6 @@
 package connector;
 
-import game.FrontendGameStateDrawerImpl;
+import game.GameStateDrawerImpl;
 import game.GameStateDrawer;
 import game.PCAndHumanGameRunner;
 import org.apache.log4j.Logger;
@@ -20,7 +20,7 @@ public class WebsocketConnector {
     @OnOpen
     public void start(Session session) {
         logger.info("Session started1.");
-        final GameStateDrawer drawer = new FrontendGameStateDrawerImpl(session);
+        final GameStateDrawer drawer = new GameStateDrawerImpl(session);
         gameRunner = new PCAndHumanGameRunner(drawer);
         gameRunner.runInSeparateThread();
         logger.info("Session started2.");

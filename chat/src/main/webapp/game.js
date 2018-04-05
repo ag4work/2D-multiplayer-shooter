@@ -16,23 +16,23 @@ Game.init = function(canvasId) {
 
     function keyUpHandler(e) {
         if (e.keyCode == '37') {
-            console.log("left key up");
+//            console.log("left key up");
             leftPressed = 0;
         }
         else if (e.keyCode == '39') {
-            console.log("right key up");
+//            console.log("right key up");
             rightPressed = 0;
         }
     }
 
     function keyDownHandler(e) {
         if (e.keyCode == '37' && !leftPressed) {
-            console.log("left key down");
+//            console.log("left key down");
             Game.sendMessage("left");
             leftPressed = 1;
         }
         else if (e.keyCode == '39' && !rightPressed) {
-            console.log("right key down");
+//            console.log("right key down");
             Game.sendMessage("right");
             rightPressed = 1;
         }
@@ -48,22 +48,33 @@ Game.init = function(canvasId) {
     Game.connect = function(host) {
         Game.socket = new WebSocket(host);
         Game.socket.onopen = function() {
-            console.log('Info: WebSocket connection opened.');
+            Console.log('Info: WebSocket connection opened.');
             Game.sendMessage("Hello from frontend");
         };
         Game.socket.onmessage = function (message) {
-            console.log(message.data);
+            Console.log(message.data);
         };
         Game.socket.onclose = function () {
-            console.log('Info: WebSocket closed.');
+            Console.log('Info: WebSocket closed.');
         };
-
-
     };
     Game.sendMessage = function(message) {
-        console.log("senging message:" + message);
+        Console.log("senging message:" + message);
         Game.socket.send(message);
     };
+
+    var Console = {};
+    Console.log = (function(message) {
+        var console = document.getElementById('console');
+        var p = document.createElement('p');
+        p.style.wordWrap = 'break-word';
+        p.innerHTML = message;
+        console.appendChild(p);
+        while (console.childNodes.length > 25) {
+            console.removeChild(console.firstChild);
+        }
+        console.scrollTop = console.scrollHeight;
+    });
 
 
     var canvas = document.getElementById(canvasId);
