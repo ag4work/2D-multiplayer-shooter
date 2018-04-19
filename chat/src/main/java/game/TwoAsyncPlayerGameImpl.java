@@ -36,7 +36,7 @@ public class TwoAsyncPlayerGameImpl implements Game {
         player2.start();
         initTimer();
         do {
-            logger.info("Start internal game iteration.");
+//            logger.info("Start internal game iteration.");
             sleep();
             player1.applyMove();
             player2.applyMove();

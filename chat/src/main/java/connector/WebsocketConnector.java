@@ -15,6 +15,10 @@ public class WebsocketConnector {
     public static final Logger logger = Logger.getLogger(WebsocketConnector.class);
     private static GameRequestDispatcher dispatcher =  GameRequestDispatcher.getInstance();  // todo static ?
 
+    public WebsocketConnector() {
+        logger.info("Server endpoint started: " + this);
+    }
+
     @OnOpen
     public void start(Session session) {
         logger.info("Websocket request to game received.");
@@ -29,14 +33,16 @@ public class WebsocketConnector {
             }
         }
         try {
-            System.out.println("" + session + session.hashCode());
-            System.out.println("handlers: " + session.getMessageHandlers());
-            session.addMessageHandler(new MyMEssageHandler.Whole<String>() {
+            logger.info("Session:" + session + " hashcode: " + session.hashCode());
+            logger.info("handlers: " + session.getMessageHandlers());
+            MessageHandler.Whole<String> handler = new MyMEssageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    logger.info("my messsage handler invoked.");
+                    logger.info("my message handler invoked in session:" + session);
                 }
-            });
+            };
+            logger.info("adding handler:" + handler);
+            session.addMessageHandler(handler);
         } catch (Exception e) {
             int a  =1;
             throw e;

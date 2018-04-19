@@ -22,7 +22,7 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         try {
             for (Session session : sessions) {
                 session.getBasicRemote().sendText("Player1:" + player1.getX() + "    Player2:" + player2.getX());
-                LOGGER.info("Game state sent to:" + session);
+//                LOGGER.info("Game state sent to:" + session);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error during sending websocket message to frontend.");

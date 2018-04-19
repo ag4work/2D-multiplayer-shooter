@@ -50,7 +50,7 @@ public class PlayerCompImpl implements PlayerAsync{
                 break;
             case 2 : nextMove = Move.RIGHT;
         }
-        logger.info(name + " next move to do : " + nextMove);
+//        logger.info(name + " next move to do : " + nextMove);
     }
 
     @Override
