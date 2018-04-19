@@ -5,34 +5,50 @@ import game.GameStateDrawer;
 import game.PCAndHumanGameRunner;
 import org.apache.log4j.Logger;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.concurrent.BrokenBarrierException;
 
 @ServerEndpoint(value = "/websocket/endpoint")
 public class WebsocketConnector {
     public static final Logger logger = Logger.getLogger(WebsocketConnector.class);
-    private static PCAndHumanGameRunner gameRunner; // todo static
+    private static GameRequestDispatcher dispatcher =  GameRequestDispatcher.getInstance();  // todo static ?
 
     @OnOpen
     public void start(Session session) {
-        logger.info("Session started1.");
-        final GameStateDrawer drawer = new GameStateDrawerImpl(session);
-        gameRunner = new PCAndHumanGameRunner(drawer);
-        gameRunner.runInSeparateThread();
-        logger.info("Session started2.");
+        logger.info("Websocket request to game received.");
+        try {
+            dispatcher.register(session);
+        } catch (Exception e) {
+            logger.error("Error during session registration for game", e);
+            try {
+                session.getBasicRemote().sendText("Error during session registration for game");
+            } catch (IOException e1) {
+                logger.error("Error during sending to frontend");
+            }
+        }
+        try {
+            System.out.println("" + session + session.hashCode());
+            System.out.println("handlers: " + session.getMessageHandlers());
+            session.addMessageHandler(new MyMEssageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String message) {
+                    logger.info("my messsage handler invoked.");
+                }
+            });
+        } catch (Exception e) {
+            int a  =1;
+            throw e;
+        }
     }
 
-    @OnMessage
+//    @OnMessage
     public void incoming(String message) {
         logger.info("Message received: '" + message + "'");
-        System.out.println("Message received: '" + message + "'");
-        if (gameRunner != null) {
-            gameRunner.humanCommand(message);
-        }
+//        if (gameRunner != null) {
+//            gameRunner.humanCommand(message);
+//        }
     }
 
     @OnClose
@@ -43,6 +59,13 @@ public class WebsocketConnector {
     @OnError
     public void onError(Throwable t) throws Throwable {
         logger.error("Game Error: " + t.toString(), t);
+    }
+
+    class MyMEssageHandler implements MessageHandler.Whole<String> {
+        @Override
+        public void onMessage(String message) {
+            logger.info("my messsage handler invoked.");
+        }
     }
 
 }

@@ -9,7 +9,7 @@ public class PlayerCompImpl implements PlayerAsync{
     private static final long DEFAULT_DELAY_MS = 1900;
 
     private boolean stopped = false;
-    private Move nextMove;
+    private Move nextMove = Move.NONE;
     private String name;
     private Integer x = 50;
     private static final int DX = 10;
@@ -75,9 +75,11 @@ public class PlayerCompImpl implements PlayerAsync{
     public void applyMove() {
         if (x >= 10 && nextMove.equals(Move.LEFT)) {
             x = x - DX;
+            nextMove = Move.NONE;
         }
         if (x <= 90 && nextMove.equals(Move.RIGHT)) {
             x = x + DX;
+            nextMove = Move.NONE;
         }
     }
 

@@ -5,7 +5,7 @@
     <artifactId>chat</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>chat Maven Webapp</name>
+    <name>websocket multipleer game</name>
     <url>http://maven.apache.org</url>
 
     <properties>
