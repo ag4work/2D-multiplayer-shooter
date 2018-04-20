@@ -29,6 +29,8 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         }
     }
 
+
+
     @Override
     public Game getGame() {
         return game;

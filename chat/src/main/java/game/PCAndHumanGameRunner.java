@@ -18,6 +18,10 @@ public class PCAndHumanGameRunner {
         drawer.setGame(game);
     }
 
+    public void startGame() {
+        game.playGame();
+    }
+
     public void runInSeparateThread() {
         new Thread(new Runnable() {
             @Override
