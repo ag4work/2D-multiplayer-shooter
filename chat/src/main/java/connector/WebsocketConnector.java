@@ -35,14 +35,14 @@ public class WebsocketConnector {
         try {
             logger.info("Session:" + session + " hashcode: " + session.hashCode());
             logger.info("handlers: " + session.getMessageHandlers());
-            MessageHandler.Whole<String> handler = new MyMEssageHandler.Whole<String>() {
-                @Override
-                public void onMessage(String message) {
-                    logger.info("my message handler invoked in session:" + session);
-                }
-            };
-            logger.info("adding handler:" + handler);
-            session.addMessageHandler(handler);
+//            MessageHandler.Whole<String> handler = new MyMEssageHandler.Whole<String>() {
+//                @Override
+//                public void onMessage(String message) {
+//                    logger.info("my message handler invoked in session:" + session);
+//                }
+//            };
+//            logger.info("adding handler:" + handler);
+//            session.addMessageHandler(handler);
         } catch (Exception e) {
             int a  =1;
             throw e;

@@ -25,17 +25,20 @@ public class GameRequestDispatcher {
     CyclicBarrier barrier = new CyclicBarrier(HUMAN_PLAYERS_REQUEIRED, new TwoHumanGameStarter());
     ConcurrentLinkedDeque<Session> sessions = new ConcurrentLinkedDeque<>();
 
-    public void register(Session session) throws BrokenBarrierException, InterruptedException {
-        sessions.addFirst(session);
-        if (!barrier.isBroken()) {
-            logger.info(session + " registered and is waiting for another player.");
+    public synchronized void register(Session session) throws BrokenBarrierException, InterruptedException {
+        if (sessions.isEmpty()) {
             try {
-                session.getBasicRemote().sendText("Registered. Waiting for another player.");
+                session.getBasicRemote().sendText("Needed another player to start.");
             } catch (IOException e) {
-                logger.error(e);
+                e.printStackTrace();
             }
+            sessions.addFirst(session);
+        } else {
+            sessions.addFirst(session);
+            logger.info("two players ready.");
+            new Thread(new TwoHumanGameStarter()).start();
         }
-        barrier.await();
+
     }
 
     public static GameRequestDispatcher getInstance() {
