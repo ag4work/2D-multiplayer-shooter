@@ -1,14 +1,16 @@
-package connector;
+package dispatcher;
 
-import game.HumanAndHumanObserverAndPCGameStarter;
-import javafx.util.Pair;
+import game.*;
 import org.apache.log4j.Logger;
+import player.PlayerAsync;
+import player.PlayerCompImpl;
+import player.PlayerHuman;
+import player.PlayerHumanImpl;
+
+import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class GameRequestDispatcher {
@@ -16,8 +18,8 @@ public class GameRequestDispatcher {
     private static final GameRequestDispatcher instance = new GameRequestDispatcher();
     private static final Logger logger = Logger.getLogger(GameRequestDispatcher.class);
     ConcurrentLinkedDeque<Session> sessions = new ConcurrentLinkedDeque<>(); // todo change to regular Deque
-    Map<Session, HumanAndHumanObserverAndPCGameStarter> ses2game = new HashMap<>();
-    Map<HumanAndHumanObserverAndPCGameStarter, Set<Session>> game2ses = new HashMap<>();
+    Map<Session, TwoHumanAndPCGameStarter> ses2game = new HashMap<>();
+    Map<TwoHumanAndPCGameStarter, Set<Session>> game2ses = new HashMap<>();
 
     public synchronized void register(Session session) throws Exception {
         if (sessions.size() < TWO_HUMAN_PLAYERS_REQUEIRED - 1) {
@@ -29,7 +31,7 @@ public class GameRequestDispatcher {
                     " Trying to arrange the game.");
             Session session1 = sessions.removeLast();
             Session session2 = session;
-            HumanAndHumanObserverAndPCGameStarter gamesStarter = new HumanAndHumanObserverAndPCGameStarter(session1,
+            TwoHumanAndPCGameStarter gamesStarter = new TwoHumanAndPCGameStarter(session1,
                     session2);
             game2ses.put(gamesStarter, new HashSet<Session>(){{add(session1); add(session2);}});
             ses2game.put(session1, gamesStarter);
@@ -38,7 +40,7 @@ public class GameRequestDispatcher {
         }
     }
     public synchronized void closeGameBySession(Session session) throws IOException {
-        HumanAndHumanObserverAndPCGameStarter gameSt = ses2game.get(session);
+        TwoHumanAndPCGameStarter gameSt = ses2game.get(session);
         if (gameSt == null) {
             sessions.remove(session);
             return;
@@ -60,4 +62,5 @@ public class GameRequestDispatcher {
     public static GameRequestDispatcher getInstance() {
         return instance;
     }
+
 }

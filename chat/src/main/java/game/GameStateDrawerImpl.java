@@ -2,6 +2,8 @@ package game;
 
 import org.apache.log4j.Logger;
 import player.Player;
+import player.PlayerAsync;
+
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Set;
@@ -17,12 +19,10 @@ public class GameStateDrawerImpl implements GameStateDrawer {
 
     @Override
     public void draw() {
-        Player player1 = game.getPlayers().get(0);
-        Player player2 = game.getPlayers().get(1);
         try {
             for (Session session : sessions) {
                 if (session.isOpen()) {
-                    session.getBasicRemote().sendText("Player1:" + player1.getX() + "    Player2:" + player2.getX());
+                    session.getBasicRemote().sendText(getPlayersInfo());
                 } else {
                     LOGGER.warn("Attempt to write to closed session:" + session);
                 }
@@ -32,6 +32,13 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         }
     }
 
+    private String getPlayersInfo() {
+        StringBuilder sb = new StringBuilder();
+        for (PlayerAsync player : game.getPlayers()) {
+            sb.append(player.getName()).append(":").append(player.getX()).append(" ");
+        }
+        return sb.toString();
+    }
 
 
     @Override

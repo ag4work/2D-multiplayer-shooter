@@ -1,5 +1,9 @@
-package game;
+package dispatcher;
 
+import game.AsyncPlayersGameImpl;
+import game.Game;
+import game.GameStateDrawer;
+import game.GameStateDrawerImpl;
 import org.apache.log4j.Logger;
 import player.PlayerAsync;
 import player.PlayerCompImpl;
@@ -9,19 +13,20 @@ import player.PlayerHumanImpl;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class HumanAndHumanObserverAndPCGameStarter implements Runnable {
+
+public class TwoHumanAndPCGameStarter implements Runnable {
     PlayerAsync pcPlayer;
-    PlayerHuman playerHuman;
+    PlayerHuman playerHuman1;
+    PlayerHuman playerHuman2;
     Game game;
 
-    private static final Logger logger = Logger.getLogger(HumanAndHumanObserverAndPCGameStarter.class);
+    private static final Logger logger = Logger.getLogger(TwoHumanAndPCGameStarter.class);
     Session session1;
     Session session2;
 
-    public HumanAndHumanObserverAndPCGameStarter(Session session1, Session session2) {
+    public TwoHumanAndPCGameStarter(Session session1, Session session2) {
         this.session1 = session1;
         this.session2 = session2;
     }
@@ -35,10 +40,13 @@ public class HumanAndHumanObserverAndPCGameStarter implements Runnable {
         final GameStateDrawer drawer = new GameStateDrawerImpl(sessionSet);
 
         pcPlayer = new PlayerCompImpl("PC Player");
-        playerHuman = new PlayerHumanImpl();
-        session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman));
+        playerHuman1 = new PlayerHumanImpl("Human1");
+        playerHuman2 = new PlayerHumanImpl("Human2");
+        List<PlayerAsync> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
+        session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman1));
+        session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
 
-        game = new TwoAsyncPlayerGameImpl(pcPlayer, playerHuman, drawer);
+        game = new AsyncPlayersGameImpl(players, drawer);
         drawer.setGame(game);
         game.playGame();
         logger.info("Game thread finished.");

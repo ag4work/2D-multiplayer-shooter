@@ -1,5 +1,6 @@
 package connector;
 
+import dispatcher.GameRequestDispatcher;
 import org.apache.log4j.Logger;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;

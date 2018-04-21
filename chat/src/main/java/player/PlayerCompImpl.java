@@ -19,6 +19,10 @@ public class PlayerCompImpl implements PlayerAsync{
         this.name = name;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public Move getNextMove() {

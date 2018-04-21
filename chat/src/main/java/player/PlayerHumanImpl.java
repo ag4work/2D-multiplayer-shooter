@@ -10,7 +10,16 @@ public class PlayerHumanImpl implements PlayerHuman {
     private Move nextMove = Move.NONE;
     private Integer x = 50;
     private static final int DX = 10;
+    private String name;
 
+    public PlayerHumanImpl(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public Move getNextMove() {
