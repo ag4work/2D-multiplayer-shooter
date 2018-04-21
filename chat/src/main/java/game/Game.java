@@ -9,4 +9,6 @@ public interface Game {
     Player getWinner();
     boolean isGameOver();
     List<Player> getPlayers();
+
+    void stop();
 }

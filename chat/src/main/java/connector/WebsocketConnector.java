@@ -1,14 +1,13 @@
 package connector;
 
-import game.GameStateDrawerImpl;
-import game.GameStateDrawer;
-import game.PCAndHumanGameRunner;
 import org.apache.log4j.Logger;
-
-import javax.websocket.*;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.concurrent.BrokenBarrierException;
 
 @ServerEndpoint(value = "/websocket/endpoint")
 public class WebsocketConnector {
@@ -40,18 +39,11 @@ public class WebsocketConnector {
         }
     }
 
-//    @OnMessage
-    public void incoming(String message) {
-        logger.info("Message received: '" + message + "'");
-//        if (gameRunner != null) {
-//            gameRunner.humanCommand(message);
-//        }
-    }
-
     @OnClose
-    public void end(Session session,
-                    CloseReason closeReason) {
-        logger.info("Connection closed. Session : " + session + " reason: " + closeReason.getReasonPhrase() + " " + closeReason.getCloseCode() );
+    public void end(Session session, CloseReason closeReason) throws IOException {
+        logger.info("Connection closed. Session : " + session + " reason: " + closeReason.getReasonPhrase() + " "
+                + closeReason.getCloseCode() );
+        dispatcher.closeGameBySession(session);
     }
 
     @OnError

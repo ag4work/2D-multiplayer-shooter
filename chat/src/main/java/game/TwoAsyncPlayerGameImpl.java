@@ -20,6 +20,7 @@ public class TwoAsyncPlayerGameImpl implements Game {
     private GameStateDrawer drawer;
     private List<Player> players = new LinkedList<Player>();
     private long startTimer;
+    private boolean gameStopped = false;
 
     public TwoAsyncPlayerGameImpl(PlayerAsync player1, PlayerAsync player2, GameStateDrawer drawer) {
         this.player1 = player1;
@@ -53,7 +54,7 @@ public class TwoAsyncPlayerGameImpl implements Game {
 
     @Override
     public boolean isGameOver() {
-        return someoneWin() || isTimeOver();
+        return someoneWin() || isTimeOver() || gameStopped;
     }
 
     private boolean isTimeOver() {
@@ -108,6 +109,11 @@ public class TwoAsyncPlayerGameImpl implements Game {
     @Override
     public List<Player> getPlayers() {
         return players;
+    }
+
+    @Override
+    public void stop() {
+        gameStopped = true;
     }
 
     void sleep() {

@@ -21,8 +21,11 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         Player player2 = game.getPlayers().get(1);
         try {
             for (Session session : sessions) {
-                session.getBasicRemote().sendText("Player1:" + player1.getX() + "    Player2:" + player2.getX());
-//                LOGGER.info("Game state sent to:" + session);
+                if (session.isOpen()) {
+                    session.getBasicRemote().sendText("Player1:" + player1.getX() + "    Player2:" + player2.getX());
+                } else {
+                    LOGGER.warn("Attempt to write to closed session:" + session);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Error during sending websocket message to frontend.");
