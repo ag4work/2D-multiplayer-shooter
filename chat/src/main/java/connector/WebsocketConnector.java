@@ -12,17 +12,14 @@ import java.io.IOException;
 @ServerEndpoint(value = "/websocket/endpoint")
 public class WebsocketConnector {
     public static final Logger logger = Logger.getLogger(WebsocketConnector.class);
-    private static GameRequestDispatcher dispatcher =  GameRequestDispatcher.getInstance();  // todo static ?
-
-    public WebsocketConnector() {
-        logger.info("Server endpoint started: " + this);
-    }
+    private static GameRequestDispatcher dispatcher =  GameRequestDispatcher.getInstance();
 
     @OnOpen
     public void start(Session session) {
         logger.info("Websocket request to game received.");
         try {
             dispatcher.register(session);
+            logger.info("Session:'" + session + "' registered. ");
         } catch (Exception e) {
             logger.error("Error during session registration for game", e);
             try {
@@ -30,12 +27,6 @@ public class WebsocketConnector {
             } catch (IOException e1) {
                 logger.error("Error during sending to frontend");
             }
-        }
-        try {
-            logger.info("Session:" + session + " hashcode: " + session.hashCode());
-            logger.info("handlers: " + session.getMessageHandlers());
-        } catch (Exception e) {
-            throw e;
         }
     }
 
