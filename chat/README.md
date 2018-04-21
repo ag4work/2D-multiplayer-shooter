@@ -11,3 +11,13 @@ These commands change player's state (it's X-coord). After that new game state (
 sent to each players frontend.
 
 There is currently third players (PC) included.
+
+Application configured with embedded Tomcat so you can run it simply:
+1. Built:
+mvn clean install
+
+2. Run application:
+mvn tomcat7:run
+
+3. Open in browser a couple of tabs with this address:
+http://localhost:9090/
