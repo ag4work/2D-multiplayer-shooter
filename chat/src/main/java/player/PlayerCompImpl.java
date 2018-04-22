@@ -25,11 +25,6 @@ public class PlayerCompImpl implements PlayerAsync{
     }
 
     @Override
-    public Move getNextMove() {
-        return nextMove;
-    }
-
-    @Override
     public void start() {
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -87,5 +82,13 @@ public class PlayerCompImpl implements PlayerAsync{
         }
     }
 
+    @Override
+    public void moveLeft() {
 
+    }
+
+    @Override
+    public void moveRight() {
+
+    }
 }

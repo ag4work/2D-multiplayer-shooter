@@ -34,7 +34,7 @@ public class GameStateDrawerImpl implements GameStateDrawer {
 
     private String getPlayersInfo() {
         StringBuilder sb = new StringBuilder();
-        for (PlayerAsync player : game.getPlayers()) {
+        for (Player player : game.getPlayers()) {
             sb.append(player.getName()).append(":").append(player.getX()).append(" ");
         }
         return sb.toString();

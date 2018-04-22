@@ -1,14 +1,11 @@
 package dispatcher;
 
-import game.AsyncPlayersGameImpl;
+import game.GameImpl;
 import game.Game;
 import game.GameStateDrawer;
 import game.GameStateDrawerImpl;
 import org.apache.log4j.Logger;
-import player.PlayerAsync;
-import player.PlayerCompImpl;
-import player.PlayerHuman;
-import player.PlayerHumanImpl;
+import player.*;
 
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
@@ -17,9 +14,9 @@ import java.util.*;
 
 
 public class TwoHumanAndPCGameStarter implements Runnable {
-    PlayerAsync pcPlayer;
-    PlayerHuman playerHuman1;
-    PlayerHuman playerHuman2;
+    Player pcPlayer;
+    Player playerHuman1;
+    Player playerHuman2;
     Game game;
 
     private static final Logger logger = Logger.getLogger(TwoHumanAndPCGameStarter.class);
@@ -42,11 +39,11 @@ public class TwoHumanAndPCGameStarter implements Runnable {
         pcPlayer = new PlayerCompImpl("PC Player");
         playerHuman1 = new PlayerHumanImpl("Human1");
         playerHuman2 = new PlayerHumanImpl("Human2");
-        List<PlayerAsync> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
+        List<Player> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
         session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman1));
         session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
 
-        game = new AsyncPlayersGameImpl(players, drawer);
+        game = new GameImpl(players, drawer);
         drawer.setGame(game);
         game.playGame();
         logger.info("Game thread finished.");
@@ -59,9 +56,9 @@ public class TwoHumanAndPCGameStarter implements Runnable {
 
     class MyMEssageHandler implements MessageHandler.Whole<String> {
         Session session;
-        PlayerHuman player;
+        Player player;
 
-        MyMEssageHandler(Session session, PlayerHuman player) {
+        MyMEssageHandler(Session session, Player player) {
             this.session = session;
             this.player = player;
         }

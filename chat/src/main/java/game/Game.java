@@ -9,7 +9,7 @@ public interface Game {
     void playGame();
     Player getWinner();
     boolean isGameOver();
-    List<PlayerAsync> getPlayers();
+    List<Player> getPlayers();
 
     void stop();
 }

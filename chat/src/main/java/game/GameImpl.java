@@ -8,18 +8,18 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AsyncPlayersGameImpl implements Game {
+public class GameImpl implements Game {
 
     private Player winner;
-    private static final Logger logger = Logger.getLogger(AsyncPlayersGameImpl.class);
+    private static final Logger logger = Logger.getLogger(GameImpl.class);
     private static final int INTERNAL_DELAY_IN_MS = 2000;
     private static final int MAX_GAME_TIME_SEC = 5;
     private GameStateDrawer drawer;
-    private List<PlayerAsync> players = new LinkedList<>();
+    private List<Player> players = new LinkedList<>();
     private long startTimer;
     private boolean gameStopped = false;
 
-    public AsyncPlayersGameImpl(List<PlayerAsync> players, GameStateDrawer drawer) {
+    public GameImpl(List<Player> players, GameStateDrawer drawer) {
         this.players.addAll(players);
         this.drawer = drawer;
     }
@@ -27,32 +27,28 @@ public class AsyncPlayersGameImpl implements Game {
     @Override
     public void playGame() {
         logger.info("Starting game.");
-        startPlayers();
         initTimer();
+        startAsyncPlayers();
         do {
 //            logger.info("Start internal game iteration.");
             sleep();
             applyPlayersMoves();
             drawer.draw();
         } while (!isGameOver());
-        stopPlayers();
         logger.info("Game finished.");
     }
 
-    private void startPlayers() {
-        for (PlayerAsync player : players) {
-            player.start();
+    private void startAsyncPlayers() {
+        for (Player p : players) {
+            if (p instanceof PlayerAsync) {
+                ((PlayerAsync) p).start();
+            }
         }
     }
 
-    private void stopPlayers() {
-        for (PlayerAsync player : players) {
-            player.stop();
-        }
-    }
 
     private void applyPlayersMoves() {
-        for (PlayerAsync player : players) {
+        for (Player player : players) {
             player.applyMove();
         }
     }
@@ -116,13 +112,18 @@ public class AsyncPlayersGameImpl implements Game {
     }
 
     @Override
-    public List<PlayerAsync> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
     @Override
     public void stop() {
         gameStopped = true;
+        for (Player p : players) {
+            if (p instanceof PlayerAsync) {
+                ((PlayerAsync) p).stop();
+            }
+        }
     }
 
     void sleep() {

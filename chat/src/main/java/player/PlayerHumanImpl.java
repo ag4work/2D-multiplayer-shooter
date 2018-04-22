@@ -22,11 +22,6 @@ public class PlayerHumanImpl implements PlayerHuman {
     }
 
     @Override
-    public Move getNextMove() {
-        return nextMove;
-    }
-
-    @Override
     public void moveLeft() {
         nextMove = Move.LEFT;
     }
@@ -34,16 +29,6 @@ public class PlayerHumanImpl implements PlayerHuman {
     @Override
     public void moveRight() {
         nextMove = Move.RIGHT;
-    }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
     }
 
     @Override
