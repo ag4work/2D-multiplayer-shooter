@@ -1,11 +1,15 @@
 package dispatcher;
 
+import com.google.gson.Gson;
+import dto.GameStartedDTO;
 import game.GameImpl;
 import game.Game;
 import game.GameStateDrawer;
 import game.GameStateDrawerImpl;
 import org.apache.log4j.Logger;
-import player.*;
+import player.Player;
+import player.PlayerCompImpl;
+import player.PlayerHumanImpl;
 
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
@@ -18,8 +22,10 @@ public class TwoHumanAndPCGameStarter implements Runnable {
     Player playerHuman1;
     Player playerHuman2;
     Game game;
+    private final static String PLAYER1_NAME = "Human1";
+    private final static String PLAYER2_NAME = "Human2";
 
-    private static final Logger logger = Logger.getLogger(TwoHumanAndPCGameStarter.class);
+    private static final Logger LOGGER = Logger.getLogger(TwoHumanAndPCGameStarter.class);
     Session session1;
     Session session2;
 
@@ -30,23 +36,33 @@ public class TwoHumanAndPCGameStarter implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Game thread is starting.");
+        LOGGER.info("Game thread is starting.");
         Set<Session> sessionSet = new HashSet<>();
         sessionSet.add(session1);
         sessionSet.add(session2);
         final GameStateDrawer drawer = new GameStateDrawerImpl(sessionSet);
 
         pcPlayer = new PlayerCompImpl("PC Player");
-        playerHuman1 = new PlayerHumanImpl("Human1");
-        playerHuman2 = new PlayerHumanImpl("Human2");
+        playerHuman1 = new PlayerHumanImpl(PLAYER1_NAME);
+        playerHuman2 = new PlayerHumanImpl(PLAYER2_NAME);
         List<Player> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
         session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman1));
         session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
 
         game = new GameImpl(players, drawer);
         drawer.setGame(game);
+        notifyPlayersAboutStart();
         game.playGame();
-        logger.info("Game thread finished.");
+        LOGGER.info("Game thread finished.");
+    }
+
+    private void notifyPlayersAboutStart() {
+        try {
+            session1.getBasicRemote().sendText(new Gson().toJson(new GameStartedDTO(PLAYER1_NAME)));
+            session2.getBasicRemote().sendText(new Gson().toJson(new GameStartedDTO(PLAYER2_NAME)));
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
     }
 
     public void sendStop() {
@@ -65,13 +81,8 @@ public class TwoHumanAndPCGameStarter implements Runnable {
 
         @Override
         public void onMessage(String message) {
-            logger.info("Message handler of session " + session);
-            try {
-                session.getBasicRemote().sendText("Message " + message +" of " + session);
+                LOGGER.info("Message " + message +" of " + session);
                 humanCommand(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         public void humanCommand(String msg) {

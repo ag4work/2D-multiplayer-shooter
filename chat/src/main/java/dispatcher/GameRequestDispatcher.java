@@ -1,16 +1,9 @@
 package dispatcher;
 
 import com.google.gson.Gson;
-import dto.MessageDTO;
-import enums.MessageType;
-import game.*;
+import dto.WaitGameDTO;
 import org.apache.log4j.Logger;
-import player.PlayerAsync;
-import player.PlayerCompImpl;
-import player.PlayerHuman;
-import player.PlayerHumanImpl;
 
-import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
@@ -27,10 +20,9 @@ public class GameRequestDispatcher {
     public synchronized void register(Session session) throws Exception {
         if (sessions.size() < TWO_HUMAN_PLAYERS_REQUEIRED - 1) {
             sessions.add(session);
-            session.getBasicRemote().sendText(new Gson().toJson(new MessageDTO(MessageType.NotAllPlayers)));
+            session.getBasicRemote().sendText(new Gson().toJson(new WaitGameDTO()));
         } else {
             logger.info("Required " + TWO_HUMAN_PLAYERS_REQUEIRED + " sessions are ready. Trying to arrange game.");
-            session.getBasicRemote().sendText(new Gson().toJson(new MessageDTO(MessageType.GameStarted)));
             Session session1 = sessions.removeLast();
             Session session2 = session;
             TwoHumanAndPCGameStarter gamesStarter = new TwoHumanAndPCGameStarter(session1,

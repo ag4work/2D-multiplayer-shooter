@@ -53,6 +53,10 @@ Game.init = function(canvasId) {
         };
         Game.socket.onmessage = function (message) {
             Console.log(message.data);
+            var msg = JSON.parse(message.data);
+            if (msg.messageType == "GameStarted") {
+                addKeyboardListners();
+            }
         };
         Game.socket.onclose = function () {
             Console.log('Info: WebSocket closed.');
@@ -82,7 +86,6 @@ Game.init = function(canvasId) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     myrect(ctx,0, 0, canvas.width, canvas.height);
     Game.connect('ws://' + window.location.host + window.location.pathname + '/websocket/endpoint');
-    addKeyboardListners();
 };
 
 

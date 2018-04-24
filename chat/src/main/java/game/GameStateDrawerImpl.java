@@ -1,10 +1,9 @@
 package game;
 
 import com.google.gson.Gson;
-import dto.MessageDTO;
+import dto.StateDTO;
 import dto.PlayerDTO;
 import dto.mapper.PlayerDTOMapper;
-import enums.MessageType;
 import org.apache.log4j.Logger;
 import javax.websocket.Session;
 import java.io.IOException;
@@ -24,9 +23,8 @@ public class GameStateDrawerImpl implements GameStateDrawer {
     public void draw() {
         try {
             List<PlayerDTO> playerDTOs = PlayerDTOMapper.map(game.getPlayers());
-            MessageDTO messageDTO = new MessageDTO(MessageType.GameState);
-            messageDTO.setPlayerDTOs(playerDTOs);
-            String jsonMsg = obj2json(messageDTO);
+            StateDTO messageStateDTO = new StateDTO(playerDTOs);
+            String jsonMsg = obj2json(messageStateDTO);
             for (Session session : sessions) {
                 if (session.isOpen()) {
                     session.getBasicRemote().sendText(jsonMsg);
@@ -39,9 +37,9 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         }
     }
 
-    private String obj2json(MessageDTO messageDTO) {
+    private String obj2json(StateDTO messageStateDTO) {
         Gson gson = new Gson();
-        return gson.toJson(messageDTO);
+        return gson.toJson(messageStateDTO);
     }
 
     @Override
