@@ -1,8 +1,10 @@
 package game;
 
 import com.google.gson.Gson;
+import dto.MessageDTO;
 import dto.PlayerDTO;
 import dto.mapper.PlayerDTOMapper;
+import enums.MessageType;
 import org.apache.log4j.Logger;
 import javax.websocket.Session;
 import java.io.IOException;
@@ -22,10 +24,12 @@ public class GameStateDrawerImpl implements GameStateDrawer {
     public void draw() {
         try {
             List<PlayerDTO> playerDTOs = PlayerDTOMapper.map(game.getPlayers());
-            String json = obj2json(playerDTOs);
+            MessageDTO messageDTO = new MessageDTO(MessageType.GameState);
+            messageDTO.setPlayerDTOs(playerDTOs);
+            String jsonMsg = obj2json(messageDTO);
             for (Session session : sessions) {
                 if (session.isOpen()) {
-                    session.getBasicRemote().sendText(json);
+                    session.getBasicRemote().sendText(jsonMsg);
                 } else {
                     LOGGER.warn("Attempt to write to closed session:" + session);
                 }
@@ -35,9 +39,9 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         }
     }
 
-    private String obj2json(List<PlayerDTO> playerDTOs) {
+    private String obj2json(MessageDTO messageDTO) {
         Gson gson = new Gson();
-        return gson.toJson(playerDTOs);
+        return gson.toJson(messageDTO);
     }
 
     @Override

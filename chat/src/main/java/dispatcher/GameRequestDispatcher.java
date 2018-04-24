@@ -1,5 +1,8 @@
 package dispatcher;
 
+import com.google.gson.Gson;
+import dto.MessageDTO;
+import enums.MessageType;
 import game.*;
 import org.apache.log4j.Logger;
 import player.PlayerAsync;
@@ -24,11 +27,10 @@ public class GameRequestDispatcher {
     public synchronized void register(Session session) throws Exception {
         if (sessions.size() < TWO_HUMAN_PLAYERS_REQUEIRED - 1) {
             sessions.add(session);
-            session.getBasicRemote().sendText("Needed another player to start.");
+            session.getBasicRemote().sendText(new Gson().toJson(new MessageDTO(MessageType.NotAllPlayers)));
         } else {
             logger.info("Required " + TWO_HUMAN_PLAYERS_REQUEIRED + " sessions are ready. Trying to arrange game.");
-            session.getBasicRemote().sendText("Requered " + TWO_HUMAN_PLAYERS_REQUEIRED + " sessions are ready." +
-                    " Trying to arrange the game.");
+            session.getBasicRemote().sendText(new Gson().toJson(new MessageDTO(MessageType.GameStarted)));
             Session session1 = sessions.removeLast();
             Session session2 = session;
             TwoHumanAndPCGameStarter gamesStarter = new TwoHumanAndPCGameStarter(session1,
