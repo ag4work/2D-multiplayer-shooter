@@ -6,6 +6,12 @@ Game.init = function(canvasId) {
     var direction;
     var leftPressed = 0;
     var rightPressed = 0;
+    var WAIT_FOR_PLAYER = 0;
+    var WAIT_FOR_START = 1;
+    var PLAYING = 2;
+    var GAME_OVER = 3;
+    var gameState = WAIT_FOR_PLAYER;
+    var playerName;
     function myrect(ctx, x, y, width, height) {
         ctx.beginPath();
         ctx.fillStyle = null;
@@ -43,6 +49,10 @@ Game.init = function(canvasId) {
         window.addEventListener('keydown', keyDownHandler, false);
         window.addEventListener('keyup', keyUpHandler, false);
     }
+    function removeKeyboardListeners() {
+        window.removeEventListener('keydown', keyDownHandler);
+        window.removeEventListener('keyup', keyUpHandler);
+    }
 
     Game.socket = {};
     Game.connect = function(host) {
@@ -52,11 +62,23 @@ Game.init = function(canvasId) {
             Game.sendMessage("Hello from frontend");
         };
         Game.socket.onmessage = function (message) {
-            Console.log(message.data);
             var msg = JSON.parse(message.data);
             if (msg.messageType == "GameStarted") {
+                gameState = PLAYING;
+                playerName = msg.playerName;
                 addKeyboardListners();
+                Console.log("Game is starting. Your name:" + playerName);
+            } else if (msg.messageType == "NotAllPlayers") {
+                gameState = WAIT_FOR_PLAYER;
+                Console.log("Waiting for another player");
+            } else if (msg.messageType == "GameState") {
+                Console.log(JSON.stringify(msg.playerDTOs));
+            } else if (msg.messageType == "GameFinished") {
+                gameState = GAME_OVER;
+                removeKeyboardListeners();
+                Console.log("Game over.")
             }
+
         };
         Game.socket.onclose = function () {
             Console.log('Info: WebSocket closed.');

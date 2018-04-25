@@ -1,6 +1,7 @@
 package dispatcher;
 
 import com.google.gson.Gson;
+import dto.GameFinishedDTO;
 import dto.WaitGameDTO;
 import org.apache.log4j.Logger;
 
@@ -47,7 +48,7 @@ public class GameRequestDispatcher {
         for (Session s : sessions) {
             ses2game.remove(s);
             if (!s.equals(session) && s.isOpen()) {
-                s.getBasicRemote().sendText("Other player closed the game.");
+                s.getBasicRemote().sendText(new Gson().toJson(new GameFinishedDTO()));
                 s.close();
             }
         }
