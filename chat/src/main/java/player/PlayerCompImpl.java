@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 public class PlayerCompImpl implements PlayerAsync{
     public static final Logger logger = Logger.getLogger(PlayerCompImpl.class);
-    private static final long DEFAULT_DELAY_MS = 1900;
+    private static final long DEFAULT_DELAY_MS = 500;
 
     private boolean stopped = false;
     private Move nextMove = Move.NONE;
@@ -76,7 +76,7 @@ public class PlayerCompImpl implements PlayerAsync{
             x = x - DX;
             nextMove = Move.NONE;
         }
-        if (x <= 90 && nextMove.equals(Move.RIGHT)) {
+        if (x <= 80 && nextMove.equals(Move.RIGHT)) {
             x = x + DX;
             nextMove = Move.NONE;
         }

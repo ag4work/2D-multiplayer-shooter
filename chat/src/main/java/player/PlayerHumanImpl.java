@@ -41,7 +41,7 @@ public class PlayerHumanImpl implements PlayerHuman {
             x = x - DX;
             nextMove = Move.NONE;
         }
-        if (x <= 90 && nextMove.equals(Move.RIGHT)) {
+        if (x <= 80 && nextMove.equals(Move.RIGHT)) {
             x = x + DX;
             nextMove = Move.NONE;
         }

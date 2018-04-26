@@ -12,7 +12,7 @@ public class GameImpl implements Game {
 
     private Player winner;
     private static final Logger logger = Logger.getLogger(GameImpl.class);
-    private static final int INTERNAL_DELAY_IN_MS = 2000;
+    private static final int INTERNAL_DELAY_IN_MS = 200;
     private static final int MAX_GAME_TIME_SEC = 5;
     private GameStateDrawer drawer;
     private List<Player> players = new LinkedList<>();

@@ -12,12 +12,31 @@ Game.init = function(canvasId) {
     var GAME_OVER = 3;
     var gameState = WAIT_FOR_PLAYER;
     var playerName;
-    function myrect(ctx, x, y, width, height) {
+    function myrect(ctx, x, y, width, height, color) {
         ctx.beginPath();
-        ctx.fillStyle = null;
+        ctx.fillStyle = color;
         ctx.rect(x, y, width, height);
         ctx.fill();
         ctx.closePath();
+    }
+    function drawHuman1(x) {
+        var w = canvas.width;
+        myrect(ctx, x * w / 100, 2, w / 10, canvas.height / 10, "red");
+        ctx.fillStyle = "white"; ctx.font = "15px Arial";
+        ctx.fillText("Human1",(x+1) * w / 100, canvas.height / 20 + 4);
+    }
+    function drawHuman2(x) {
+        var w = canvas.width;
+        myrect(ctx, x * w / 100, canvas.height * 0.9 - 2, w / 10, canvas.height / 10, "red");
+        ctx.fillStyle = "white"; ctx.font = "15px Arial";
+        ctx.fillText("Human2", (x+1) * w / 100, canvas.height * 0.95);
+    }
+
+    function drawPC(x) {
+        var w = canvas.width;
+        myrect(ctx, x * w / 100, canvas.height * 0.45, w / 10, canvas.height / 10, "red");
+        ctx.fillStyle = "white"; ctx.font = "15px Arial";
+        ctx.fillText("PC", (x+1) * w / 100, canvas.height * 0.52);
     }
 
     function keyUpHandler(e) {
@@ -73,6 +92,10 @@ Game.init = function(canvasId) {
                 Console.log("Waiting for another player");
             } else if (msg.messageType == "GameState") {
                 Console.log(JSON.stringify(msg.playerDTOs));
+                myrect(ctx, 0, 0, canvas.width, canvas.height, "black");
+                drawHuman1(msg.playerDTOs[0].x);
+                drawHuman2(msg.playerDTOs[1].x);
+                drawPC(msg.playerDTOs[2].x);
             } else if (msg.messageType == "GameFinished") {
                 gameState = GAME_OVER;
                 removeKeyboardListeners();
@@ -106,7 +129,7 @@ Game.init = function(canvasId) {
     var canvas = document.getElementById(canvasId);
     var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    myrect(ctx,0, 0, canvas.width, canvas.height);
+    myrect(ctx, 0, 0, canvas.width, canvas.height, null);
     Game.connect('ws://' + window.location.host + window.location.pathname + '/websocket/endpoint');
 };
 
