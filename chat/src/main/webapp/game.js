@@ -20,22 +20,29 @@ Game.init = function(canvasId) {
         ctx.fill();
         ctx.closePath();
     }
-    function drawHuman1(x) {
+    function drawHuman1(player) {
         var w = canvas.width;
-        myrect(ctx, x * w / 100, 2, w / 10, canvas.height / 10, "red");
+        var x = player.x;
+        myrect(ctx, x * w / 100, 2, w / 10, canvas.height / 10, getColor(player));
         ctx.fillStyle = "white"; ctx.font = "15px Arial";
         ctx.fillText("Human1",(x+1) * w / 100, canvas.height / 20 + 4);
     }
-    function drawHuman2(x) {
+    function drawHuman2(player) {
         var w = canvas.width;
-        myrect(ctx, x * w / 100, canvas.height * 0.9 - 2, w / 10, canvas.height / 10, "red");
+        x = player.x;
+        myrect(ctx, x * w / 100, canvas.height * 0.9 - 2, w / 10, canvas.height / 10, getColor(player));
         ctx.fillStyle = "white"; ctx.font = "15px Arial";
         ctx.fillText("Human2", (x+1) * w / 100, canvas.height * 0.95);
     }
 
-    function drawPC(x) {
+    function getColor(player) {
+        return player.alive ? "green" : "red";
+    }
+
+    function drawPC(player) {
         var w = canvas.width;
-        myrect(ctx, x * w / 100, canvas.height * 0.45, w / 10, canvas.height / 10, "red");
+        var x = player.x;
+        myrect(ctx, x * w / 100, canvas.height * 0.45, w / 10, canvas.height / 10, getColor(player));
         ctx.fillStyle = "white"; ctx.font = "15px Arial";
         ctx.fillText("PC", (x+1) * w / 100, canvas.height * 0.52);
     }
@@ -112,14 +119,14 @@ Game.init = function(canvasId) {
             } else if (msg.messageType == "GameState") {
                 Console.log(JSON.stringify(msg));
                 myrect(ctx, 0, 0, canvas.width, canvas.height, "black");
-                drawHuman1(msg.playerDTOs[0].x);
-                drawHuman2(msg.playerDTOs[1].x);
-                drawPC(msg.playerDTOs[2].x);
+                drawHuman1(msg.playerDTOs[0]);
+                drawHuman2(msg.playerDTOs[1]);
+                drawPC(msg.playerDTOs[2]);
                 drawBullets(msg.bullets);
             } else if (msg.messageType == "GameFinished") {
                 gameState = GAME_OVER;
                 removeKeyboardListeners();
-                Console.log("Game over.")
+                Console.log("Game over. Winner: " + msg.winnerName);
             }
 
         };

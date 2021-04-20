@@ -1,6 +1,8 @@
 package game;
 
 import com.google.gson.Gson;
+import dto.BaseDTO;
+import dto.GameFinishedDTO;
 import dto.StateDTO;
 import dto.PlayerDTO;
 import dto.mapper.PlayerDTOMapper;
@@ -21,9 +23,13 @@ public class GameStateDrawerImpl implements GameStateDrawer {
 
     @Override
     public void draw() {
-        try {
             List<PlayerDTO> playerDTOs = PlayerDTOMapper.map(game.getPlayers());
             StateDTO messageStateDTO = new StateDTO(playerDTOs, game.getBullets());
+            send(messageStateDTO);
+    }
+
+    private void send(BaseDTO messageStateDTO) {
+        try {
             String jsonMsg = obj2json(messageStateDTO);
             for (Session session : sessions) {
                 if (session.isOpen()) {
@@ -37,7 +43,14 @@ public class GameStateDrawerImpl implements GameStateDrawer {
         }
     }
 
-    private String obj2json(StateDTO messageStateDTO) {
+
+    @Override
+    public void drawGameOver() {
+        GameFinishedDTO gameOver = new GameFinishedDTO(game.getWinner() != null ? game.getWinner().getName() : null);
+        send(gameOver);
+    }
+
+    private String obj2json(BaseDTO messageStateDTO) {
         Gson gson = new Gson();
         return gson.toJson(messageStateDTO);
     }

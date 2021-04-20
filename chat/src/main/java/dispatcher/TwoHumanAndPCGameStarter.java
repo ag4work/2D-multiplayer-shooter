@@ -19,6 +19,8 @@ import java.util.*;
 
 
 public class TwoHumanAndPCGameStarter implements Runnable {
+    public static final boolean TOP = false;
+    public static final boolean BOTTOM = true;
     Player pcPlayer;
     PlayerHuman playerHuman1;
     PlayerHuman playerHuman2;
@@ -43,9 +45,9 @@ public class TwoHumanAndPCGameStarter implements Runnable {
         sessionSet.add(session2);
         final GameStateDrawer drawer = new GameStateDrawerImpl(sessionSet);
 
-        pcPlayer = new PlayerCompImpl("PC Player");
-        playerHuman1 = new PlayerHumanImpl(PLAYER1_NAME, 0);
-        playerHuman2 = new PlayerHumanImpl(PLAYER2_NAME, 100);
+        pcPlayer = new PlayerCompImpl("PC Player", 50, 50);
+        playerHuman1 = new PlayerHumanImpl(PLAYER1_NAME, 5, TOP);
+        playerHuman2 = new PlayerHumanImpl(PLAYER2_NAME, 95, BOTTOM);
         List<Player> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
         session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman1));
         session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
@@ -89,6 +91,9 @@ public class TwoHumanAndPCGameStarter implements Runnable {
         }
 
         public void humanCommand(String msg) {
+            if (!player.isAlive()) {
+                return;
+            }
             if (msg.equals("right")) {
                 player.moveRight();
             } else if (msg.equals("left")) {

@@ -34,14 +34,31 @@ public class GameImpl implements Game {
         initTimer();
         startAsyncPlayers();
         do {
-//            logger.info("Start internal game iteration.");
             sleep();
             applyPlayersMoves();
             moveBullets();
+            removeShotPlayers();
             drawer.draw();
         } while (!isGameOver());
+        drawer.drawGameOver();
         logger.info("Game finished.");
     }
+
+    private void removeShotPlayers() {
+        for (Player player : players) {
+            for (Bullet bullet : bullets) {
+                if (playerWasShot(player, bullet)) {
+                    player.setDied();
+                }
+            }
+        }
+    }
+
+    private boolean playerWasShot(Player p, Bullet b) {
+        return b.getX()  >= p.getX() - 5 && b.getX()  <= p.getX() + 5 &&
+                b.getY()  >= p.getY() - 5 && b.getY()  <= p.getY() + 5;
+    }
+
 
     private void moveBullets() {
         Iterator<Bullet> iterator = bullets.iterator();
@@ -63,7 +80,6 @@ public class GameImpl implements Game {
         }
     }
 
-
     private void applyPlayersMoves() {
         for (Player player : players) {
             player.applyMove();
@@ -76,7 +92,7 @@ public class GameImpl implements Game {
 
     @Override
     public boolean isGameOver() {
-        return someoneWin() || isTimeOver() || gameStopped;
+        return oneOrNobodyAlive() || isTimeOver() || gameStopped;
     }
 
     private boolean isTimeOver() {
@@ -88,36 +104,12 @@ public class GameImpl implements Game {
         }
     }
 
-
-
-    private boolean someoneWin() {
-        if (true) {
-            return false; // todo remove it
+    private boolean oneOrNobodyAlive() {
+        long aliveCount = players.stream().filter(Player::isAlive).count();
+        if (aliveCount == 1) {
+            winner = players.stream().filter(Player::isAlive).findFirst().get();
         }
-/*        if (player1.getNextMove() == null) {
-            logger.info("player1 did not do his move");
-            return false;
-        }
-        if (player2.getNextMove() == null) {
-            logger.info("player2 did not do his move");
-            return false;
-        }
-
-        if (player1.getNextMove().equals(Move.SHOOT) && !player2.getNextMove().equals(Move.SHOOT)) {
-            logger.info("player1 shot player2. Game over.");
-            winner = player1;
-            return true;
-        }
-        if (!player1.getNextMove().equals(Move.SHOOT) && player2.getNextMove().equals(Move.SHOOT)) {
-            logger.info("player2 shot player1. Game over.");
-            winner = player2;
-            return true;
-        }
-        if (player1.getNextMove().equals(Move.SHOOT) && player2.getNextMove().equals(Move.SHOOT)) {
-            logger.info("Players shoot simultaniously. Continue game.");
-        }*/
-        logger.info("Players missed. Continue game.");
-        return false;
+        return aliveCount <= 1;
     }
 
     @Override

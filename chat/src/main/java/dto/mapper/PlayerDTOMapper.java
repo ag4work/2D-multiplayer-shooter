@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PlayerDTOMapper {
     public static PlayerDTO map(Player p) {
-        return new PlayerDTO(p.getName(), p.getX());
+        return new PlayerDTO(p.getName(), p.getX(), p.getY(), p.isAlive());
     }
 
     public static List<PlayerDTO> map(List<Player> players) {

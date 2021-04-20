@@ -4,7 +4,7 @@ import enums.Move;
 import org.apache.log4j.Logger;
 
 
-public class PlayerCompImpl implements PlayerAsync{
+public class PlayerCompImpl implements PlayerAsync {
     public static final Logger logger = Logger.getLogger(PlayerCompImpl.class);
     private static final long DEFAULT_DELAY_MS = 500;
 
@@ -13,10 +13,27 @@ public class PlayerCompImpl implements PlayerAsync{
     private String name;
     private Integer x = 50;
     private static final int DX = 10;
+    private boolean alive = true;
+    private int y;
 
-
-    public PlayerCompImpl(final String name) {
+    public PlayerCompImpl(final String name, int x, int y) {
         this.name = name;
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public void setDied() {
+        alive = false;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     @Override
@@ -33,7 +50,7 @@ public class PlayerCompImpl implements PlayerAsync{
                 do {
                     sleep();
                     makeMove();
-                } while (!stopped);
+                } while (!stopped && alive);
             }
         });
         thread.start();
@@ -60,6 +77,11 @@ public class PlayerCompImpl implements PlayerAsync{
     @Override
     public Integer getX() {
         return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
     }
 
     static void sleep() {

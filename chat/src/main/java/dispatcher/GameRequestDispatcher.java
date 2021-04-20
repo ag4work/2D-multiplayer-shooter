@@ -48,7 +48,7 @@ public class GameRequestDispatcher {
         for (Session s : sessions) {
             ses2game.remove(s);
             if (!s.equals(session) && s.isOpen()) {
-                s.getBasicRemote().sendText(new Gson().toJson(new GameFinishedDTO()));
+                s.getBasicRemote().sendText(new Gson().toJson(new GameFinishedDTO(null)));
                 s.close();
             }
         }

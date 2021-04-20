@@ -15,10 +15,28 @@ public class PlayerHumanImpl implements PlayerHuman {
     private static final int DX = 10;
     private String name;
     private Game game;
+    private boolean bottom;
+    private boolean alive;
 
-    public PlayerHumanImpl(String name, int y) {
+    public PlayerHumanImpl(String name, int y, boolean isBottom) {
         this.y = y;
         this.name = name;
+        this.bottom = isBottom;
+        alive = true;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    @Override
+    public void setDied() {
+        alive = false;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     @Override
@@ -59,12 +77,20 @@ public class PlayerHumanImpl implements PlayerHuman {
 
     @Override
     public void shoot() {
-        Bullet bullet = new Bullet(x, y, -2);
+        int bulletSpeed = 4;
+        int distFromBottom = 15;
+        int startY = bottom ?  100 - distFromBottom : distFromBottom;
+        Bullet bullet = new Bullet(x + 5, startY, bottom ? -bulletSpeed : bulletSpeed);
         game.getBullets().add(bullet);
     }
 
     @Override
     public Integer getX() {
         return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
     }
 }

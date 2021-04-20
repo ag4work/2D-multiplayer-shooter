@@ -6,7 +6,9 @@ import java.util.List;
 
 
 public class GameFinishedDTO extends BaseDTO {
-    public GameFinishedDTO() {
+    String winnerName;
+    public GameFinishedDTO(String winnerName) {
         super(MessageType.GameFinished);
+        this.winnerName = winnerName;
     }
 }

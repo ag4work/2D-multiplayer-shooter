@@ -7,4 +7,6 @@ public interface GameStateDrawer {
     void draw();
     void setGame(Game game);
     Game getGame();
+
+    void drawGameOver();
 }
