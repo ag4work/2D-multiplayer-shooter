@@ -9,6 +9,7 @@ import game.GameStateDrawerImpl;
 import org.apache.log4j.Logger;
 import player.Player;
 import player.PlayerCompImpl;
+import player.PlayerHuman;
 import player.PlayerHumanImpl;
 
 import javax.websocket.MessageHandler;
@@ -19,8 +20,8 @@ import java.util.*;
 
 public class TwoHumanAndPCGameStarter implements Runnable {
     Player pcPlayer;
-    Player playerHuman1;
-    Player playerHuman2;
+    PlayerHuman playerHuman1;
+    PlayerHuman playerHuman2;
     Game game;
     private final static String PLAYER1_NAME = "Human1";
     private final static String PLAYER2_NAME = "Human2";
@@ -43,13 +44,15 @@ public class TwoHumanAndPCGameStarter implements Runnable {
         final GameStateDrawer drawer = new GameStateDrawerImpl(sessionSet);
 
         pcPlayer = new PlayerCompImpl("PC Player");
-        playerHuman1 = new PlayerHumanImpl(PLAYER1_NAME);
-        playerHuman2 = new PlayerHumanImpl(PLAYER2_NAME);
+        playerHuman1 = new PlayerHumanImpl(PLAYER1_NAME, 0);
+        playerHuman2 = new PlayerHumanImpl(PLAYER2_NAME, 100);
         List<Player> players = new LinkedList<>(Arrays.asList(playerHuman1, playerHuman2, pcPlayer));
         session1.addMessageHandler(new MyMEssageHandler(session1, playerHuman1));
         session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
 
         game = new GameImpl(players, drawer);
+        playerHuman1.setGame(game);
+        playerHuman2.setGame(game);
         drawer.setGame(game);
         notifyPlayersAboutStart();
         game.playGame();
@@ -90,6 +93,8 @@ public class TwoHumanAndPCGameStarter implements Runnable {
                 player.moveRight();
             } else if (msg.equals("left")) {
                 player.moveLeft();
+            } else if (msg.equals("shoot")) {
+                player.shoot();
             }
         }
 

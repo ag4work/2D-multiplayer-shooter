@@ -6,6 +6,7 @@ Game.init = function(canvasId) {
     var direction;
     var leftPressed = 0;
     var rightPressed = 0;
+    var spacePressed = 0;
     var WAIT_FOR_PLAYER = 0;
     var WAIT_FOR_START = 1;
     var PLAYING = 2;
@@ -39,6 +40,17 @@ Game.init = function(canvasId) {
         ctx.fillText("PC", (x+1) * w / 100, canvas.height * 0.52);
     }
 
+    function drawBullets(bullets) {
+        var w = canvas.width;
+        var h = canvas.height ;
+
+        for (var i = 0; i < bullets.length; i++) {
+            tx = bullets[i].x * w / 100;
+            ty = bullets[i].y * h / 100;
+            myrect(ctx, tx, ty, 2, 2, "red" );
+        }
+    }
+
     function keyUpHandler(e) {
         if (e.keyCode == '37') {
 //            console.log("left key up");
@@ -47,6 +59,9 @@ Game.init = function(canvasId) {
         else if (e.keyCode == '39') {
 //            console.log("right key up");
             rightPressed = 0;
+        } else if (e.keyCode == '32') {
+//            console.log("left key up");
+            spacePressed = 0;
         }
     }
 
@@ -60,6 +75,10 @@ Game.init = function(canvasId) {
 //            console.log("right key down");
             Game.sendMessage("right");
             rightPressed = 1;
+        }        else if (e.keyCode == '32' && !spacePressed) {
+//            console.log("right key down");
+            Game.sendMessage("shoot");
+            spacePressed = 1;
         }
     }
 
@@ -91,11 +110,12 @@ Game.init = function(canvasId) {
                 gameState = WAIT_FOR_PLAYER;
                 Console.log("Waiting for another player");
             } else if (msg.messageType == "GameState") {
-                Console.log(JSON.stringify(msg.playerDTOs));
+                Console.log(JSON.stringify(msg));
                 myrect(ctx, 0, 0, canvas.width, canvas.height, "black");
                 drawHuman1(msg.playerDTOs[0].x);
                 drawHuman2(msg.playerDTOs[1].x);
                 drawPC(msg.playerDTOs[2].x);
+                drawBullets(msg.bullets);
             } else if (msg.messageType == "GameFinished") {
                 gameState = GAME_OVER;
                 removeKeyboardListeners();

@@ -6,4 +6,8 @@ public interface Player {
     void moveLeft();
     void moveRight();
     void applyMove();
+
+    default void shoot() {
+
+    }
 }

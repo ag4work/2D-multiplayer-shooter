@@ -23,7 +23,7 @@ public class GameStateDrawerImpl implements GameStateDrawer {
     public void draw() {
         try {
             List<PlayerDTO> playerDTOs = PlayerDTOMapper.map(game.getPlayers());
-            StateDTO messageStateDTO = new StateDTO(playerDTOs);
+            StateDTO messageStateDTO = new StateDTO(playerDTOs, game.getBullets());
             String jsonMsg = obj2json(messageStateDTO);
             for (Session session : sessions) {
                 if (session.isOpen()) {

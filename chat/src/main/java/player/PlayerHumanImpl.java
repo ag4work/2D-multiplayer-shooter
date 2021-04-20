@@ -1,6 +1,8 @@
 package player;
 
 import enums.Move;
+import game.Bullet;
+import game.Game;
 import org.apache.log4j.Logger;
 
 
@@ -9,16 +11,24 @@ public class PlayerHumanImpl implements PlayerHuman {
 
     private Move nextMove = Move.NONE;
     private Integer x = 50;
+    private int y;
     private static final int DX = 10;
     private String name;
+    private Game game;
 
-    public PlayerHumanImpl(String name) {
+    public PlayerHumanImpl(String name, int y) {
+        this.y = y;
         this.name = name;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     @Override
@@ -45,6 +55,12 @@ public class PlayerHumanImpl implements PlayerHuman {
             x = x + DX;
             nextMove = Move.NONE;
         }
+    }
+
+    @Override
+    public void shoot() {
+        Bullet bullet = new Bullet(x, y, -2);
+        game.getBullets().add(bullet);
     }
 
     @Override
