@@ -1,16 +1,16 @@
 package player;
 
+import game.Game;
+
 public interface Player {
-    Integer getX();
-    int getY();
     String getName();
+    int getX();
+    int getY();
+    void setGame(Game game);
+    void applyMove();
     void moveLeft();
     void moveRight();
-    void applyMove();
+    void shoot();
     boolean isAlive();
     void setDied();
-
-    default void shoot() {
-
-    }
 }

@@ -9,7 +9,6 @@ import game.GameStateDrawerImpl;
 import org.apache.log4j.Logger;
 import player.Player;
 import player.PlayerCompImpl;
-import player.PlayerHuman;
 import player.PlayerHumanImpl;
 
 import javax.websocket.MessageHandler;
@@ -22,8 +21,8 @@ public class TwoHumanAndPCGameStarter implements Runnable {
     public static final boolean TOP = false;
     public static final boolean BOTTOM = true;
     Player pcPlayer;
-    PlayerHuman playerHuman1;
-    PlayerHuman playerHuman2;
+    Player playerHuman1;
+    Player playerHuman2;
     Game game;
     private final static String PLAYER1_NAME = "Human1";
     private final static String PLAYER2_NAME = "Human2";
@@ -53,8 +52,7 @@ public class TwoHumanAndPCGameStarter implements Runnable {
         session2.addMessageHandler(new MyMEssageHandler(session2, playerHuman2));
 
         game = new GameImpl(players, drawer);
-        playerHuman1.setGame(game);
-        playerHuman2.setGame(game);
+        players.forEach(p -> p.setGame(game));
         drawer.setGame(game);
         notifyPlayersAboutStart();
         game.playGame();

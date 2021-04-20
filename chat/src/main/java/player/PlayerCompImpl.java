@@ -1,44 +1,20 @@
 package player;
 
-import enums.Move;
+import game.Bullet;
 import org.apache.log4j.Logger;
 
 
-public class PlayerCompImpl implements PlayerAsync {
+public class PlayerCompImpl extends BasePlayerImpl implements PlayerAsync {
+
     public static final Logger logger = Logger.getLogger(PlayerCompImpl.class);
     private static final long DEFAULT_DELAY_MS = 500;
 
     private boolean stopped = false;
-    private Move nextMove = Move.NONE;
-    private String name;
-    private Integer x = 50;
-    private static final int DX = 10;
-    private boolean alive = true;
-    private int y;
+    private static final int BULLET_SPEED = 4;
+
 
     public PlayerCompImpl(final String name, int x, int y) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-    }
-
-    @Override
-    public void setDied() {
-        alive = false;
-    }
-
-    @Override
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        super(x, y, name);
     }
 
     @Override
@@ -46,42 +22,36 @@ public class PlayerCompImpl implements PlayerAsync {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                logger.info(name + "started.");
+                logger.info(getName() + "started.");
                 do {
                     sleep();
-                    makeMove();
-                } while (!stopped && alive);
+                    decideMove();
+                } while (!stopped && isAlive());
             }
         });
         thread.start();
     }
 
-    private void makeMove() {
+    private void decideMove() {
         int rnd = (int)(Math.random()*3);
-        Move result;
         switch (rnd) {
-            case 0 : nextMove = Move.SHOOT;
+            case 0 : shoot();
                 break;
-            case 1 : nextMove = Move.LEFT;
+            case 1 : moveLeft();
                 break;
-            case 2 : nextMove = Move.RIGHT;
+            case 2 : moveRight();
         }
-//        logger.info(name + " next move to do : " + nextMove);
+    }
+
+    @Override
+    public void applyShoot() {
+        Bullet bullet = (int)(Math.random()*2) == 0 ? new Bullet(getX(), 60, BULLET_SPEED) : new Bullet(getX(), 40, -BULLET_SPEED);
+        getGame().getBullets().add(bullet);
     }
 
     @Override
     public void stop() {
         stopped = true;
-    }
-
-    @Override
-    public Integer getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
     }
 
     static void sleep() {
@@ -90,27 +60,5 @@ public class PlayerCompImpl implements PlayerAsync {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void applyMove() {
-        if (x >= 10 && nextMove.equals(Move.LEFT)) {
-            x = x - DX;
-            nextMove = Move.NONE;
-        }
-        if (x <= 80 && nextMove.equals(Move.RIGHT)) {
-            x = x + DX;
-            nextMove = Move.NONE;
-        }
-    }
-
-    @Override
-    public void moveLeft() {
-
-    }
-
-    @Override
-    public void moveRight() {
-
     }
 }
