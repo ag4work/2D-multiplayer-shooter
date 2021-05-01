@@ -89,10 +89,22 @@ Game.init = function(canvasId) {
         }
     }
 
+    function left(ev) {
+        Game.sendMessage("left");
+    }
+    function shoot(ev) {
+        Game.sendMessage("shoot");
+    }
+    function right(ev) {
+        Game.sendMessage("right");
+    }
 
     function addKeyboardListners() {
         window.addEventListener('keydown', keyDownHandler, false);
         window.addEventListener('keyup', keyUpHandler, false);
+        document.getElementById("left").ontouchstart = left;
+        document.getElementById("shoot").ontouchstart = shoot;
+        document.getElementById("right").ontouchstart = right;
     }
     function removeKeyboardListeners() {
         window.removeEventListener('keydown', keyDownHandler);
@@ -117,7 +129,7 @@ Game.init = function(canvasId) {
                 gameState = WAIT_FOR_PLAYER;
                 Console.log("Waiting for another player");
             } else if (msg.messageType == "GameState") {
-                Console.log(JSON.stringify(msg));
+                // Console.log(JSON.stringify(msg));
                 myrect(ctx, 0, 0, canvas.width, canvas.height, "black");
                 drawHuman1(msg.playerDTOs[0]);
                 drawHuman2(msg.playerDTOs[1]);

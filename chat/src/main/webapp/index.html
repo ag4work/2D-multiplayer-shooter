@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:background-color="http://www.w3.org/1999/xhtml">
 <head lang="en">
     <meta charset="UTF-8">
     <title>Websocket game</title>
@@ -9,8 +9,12 @@
 <body>
     <canvas id="gameBoard" width="800" height = "230"></canvas>
     <div id="console-container">
-        <div id="console"/>
+        <div id="console"></div>
     </div>
+
+    <div id="left" class="touch"></div>
+    <div id="shoot" class="touch"></div>
+    <div id="right" class="touch"></div>
     <script>Game.init("gameBoard")</script>
 </body>
 </html>
